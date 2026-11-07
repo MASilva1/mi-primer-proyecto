@@ -1,0 +1,14 @@
+# Evitar publicación de material operativo y sensible
+.env
+.env.*
+!.env.example
+*.secret
+*.secrets
+*.key
+credentials*.json
+oauth*.json
+*.log
+execution-data/
+exports-originales/
+datos-reales/
+capturas-privadas/
