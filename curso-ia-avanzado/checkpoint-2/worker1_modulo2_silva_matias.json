@@ -1,0 +1,310 @@
+{
+  "name": "IdeI M2 | Worker 1 - Consultas Gmail",
+  "nodes": [
+    {
+      "id": "95da1f51-ca61-4525-aab2-9be31ea2eb7f",
+      "name": "00 | Entrada contrato JSON",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        180,
+        280
+      ],
+      "parameters": {
+        "inputSource": "workflowInputs",
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "request_id",
+              "type": "string"
+            },
+            {
+              "name": "session_id",
+              "type": "string"
+            },
+            {
+              "name": "intent",
+              "type": "string"
+            },
+            {
+              "name": "payload",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "e6490f78-1f7c-433e-a2ed-d85f1dfab7a3",
+      "name": "01 | Gmail: localizar mensaje",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        460,
+        280
+      ],
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "authentication": "oAuth2",
+        "returnAll": false,
+        "limit": 1,
+        "simple": true,
+        "filters": {
+          "q": "={{ $json.payload }}",
+          "readStatus": "both"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "alwaysOutputData": true
+    },
+    {
+      "id": "99e8e874-f258-4ede-9930-d3029678d0ca",
+      "name": "02 | ¿Existe mensaje?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        730,
+        280
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.id || \"\" }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "dae83392-433e-44b1-8834-0e3577361f5c",
+      "name": "03 | Salida success",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1020,
+        170
+      ],
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "request_id",
+              "type": "string",
+              "value": "={{ $(\"00 | Entrada contrato JSON\").first().json.request_id }}"
+            },
+            {
+              "id": "a2",
+              "name": "session_id",
+              "type": "string",
+              "value": "={{ $(\"00 | Entrada contrato JSON\").first().json.session_id }}"
+            },
+            {
+              "id": "a3",
+              "name": "worker",
+              "type": "string",
+              "value": "CONSULTA_GMAIL"
+            },
+            {
+              "id": "a4",
+              "name": "status",
+              "type": "string",
+              "value": "success"
+            },
+            {
+              "id": "a5",
+              "name": "message",
+              "type": "string",
+              "value": "Se localizo un mensaje que coincide con la consulta."
+            },
+            {
+              "id": "a6",
+              "name": "data",
+              "type": "object",
+              "value": "={{ { asunto: $json.Subject || \"\", remitente: $json.From || \"\", resumen: ($json.snippet || \"\").slice(0,240), mensaje_id: $json.id || \"\" } }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "5e45e493-9e11-48b2-9693-0d54b3f6a730",
+      "name": "04 | Salida sin coincidencias",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1020,
+        360
+      ],
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b1",
+              "name": "request_id",
+              "type": "string",
+              "value": "={{ $(\"00 | Entrada contrato JSON\").first().json.request_id }}"
+            },
+            {
+              "id": "b2",
+              "name": "session_id",
+              "type": "string",
+              "value": "={{ $(\"00 | Entrada contrato JSON\").first().json.session_id }}"
+            },
+            {
+              "id": "b3",
+              "name": "worker",
+              "type": "string",
+              "value": "CONSULTA_GMAIL"
+            },
+            {
+              "id": "b4",
+              "name": "status",
+              "type": "string",
+              "value": "not_found"
+            },
+            {
+              "id": "b5",
+              "name": "message",
+              "type": "string",
+              "value": "No hay mensajes que coincidan con la busqueda; no se inventaron resultados."
+            },
+            {
+              "id": "b6",
+              "name": "data",
+              "type": "object",
+              "value": "={{ { consulta: $(\"00 | Entrada contrato JSON\").first().json.payload } }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "e6add1f5-ba12-4703-9e30-164bc51e3cf4",
+      "name": "05 | Fallback error Gmail",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1050,
+        555
+      ],
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "err1",
+              "name": "request_id",
+              "type": "string",
+              "value": "={{ $(\"00 | Entrada contrato JSON\").first().json.request_id }}"
+            },
+            {
+              "id": "err2",
+              "name": "session_id",
+              "type": "string",
+              "value": "={{ $(\"00 | Entrada contrato JSON\").first().json.session_id }}"
+            },
+            {
+              "id": "err3",
+              "name": "worker",
+              "type": "string",
+              "value": "CONSULTA_GMAIL"
+            },
+            {
+              "id": "err4",
+              "name": "status",
+              "type": "string",
+              "value": "error"
+            },
+            {
+              "id": "err5",
+              "name": "message",
+              "type": "string",
+              "value": "Fallo en Gmail; derivar a revision humana."
+            },
+            {
+              "id": "err6",
+              "name": "data",
+              "type": "object",
+              "value": "={{ { requiere_revision: true, origen: \"fallo_tecnico\" } }}"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "connections": {
+    "00 | Entrada contrato JSON": {
+      "main": [
+        [
+          {
+            "node": "01 | Gmail: localizar mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "01 | Gmail: localizar mensaje": {
+      "main": [
+        [
+          {
+            "node": "02 | ¿Existe mensaje?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "05 | Fallback error Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "02 | ¿Existe mensaje?": {
+      "main": [
+        [
+          {
+            "node": "03 | Salida success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "04 | Salida sin coincidencias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "executionTimeout": 75
+  },
+  "active": false,
+  "pinData": {}
+}
