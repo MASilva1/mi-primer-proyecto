@@ -22,11 +22,15 @@ Evolución incremental de IdeI SmartDesk AI (M1 → M2 Manager/Workers → M3 me
 
 **Importante para mínimo privilegio:** los *nodos* están limitados a las operaciones indicadas; el alcance exacto de los permisos OAuth (*scopes* concedidos en cada proveedor) se debe revisar en el panel de credenciales, porque las herramientas usadas no exponen esos permisos de forma verificable.
 
-### Evidencia requerida de Credentials en n8n
+### Evidencia real de Credentials en n8n
 
-⚠️ **Captura visual pendiente de adjuntar a este README.** El ejercicio exige una captura auténtica de la sección **Credentials** mostrando tres conexiones activas y no es válido sustituirla por una imagen recreada. Una vez obtenida, agregar el archivo `evidencias/credentials-n8n.png` y la referencia `![Conexiones OAuth2 activas en n8n](evidencias/credentials-n8n.png)`.
+Captura auténtica aportada desde el panel **Personal → Credentials** de n8n. Se observan **Airtable account**, **Gmail account** y **Slack account** identificadas como conexiones **OAuth2 API**, con sus referencias de uso. La imagen preserva únicamente el listado de credenciales, sin mostrar claves privadas, tokens ni pantallas de edición.
 
-Para generarla: en n8n, abrir **Credentials** en el espacio personal, mostrar **Airtable account**, **Gmail account** y **Slack account**, recortar al listado de conexiones y **no incluir tokens ni secretos**.
+![Conexiones de Airtable, Gmail y Slack en n8n](evidencias/credentials-n8n.png)
+
+[Ver captura original incorporada al repositorio](evidencias/credentials-n8n.png)
+
+**Alcance de la prueba:** acredita la existencia de las tres credenciales OAuth2 y, junto con los tests #84–#85, su operatividad para las acciones configuradas. No acredita por sí sola el listado de scopes OAuth concedidos por cada proveedor, que debe revisarse por separado si el docente lo solicita.
 
 ## Arquitectura
 
