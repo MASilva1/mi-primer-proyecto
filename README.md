@@ -15,7 +15,7 @@ Me interesa trabajar en proyectos de **automatización administrativa, inteligen
 
 ## 🚀 Proyectos destacados
 
-### 01 · [Sala 13 — Sistema digital de reservas](sala13-reservas-inteligentes/README.md)
+### 01 · [Sala 13 — Sistema digital de reservas](https://github.com/MASilva1/sala13-booking-system)
 **Solución aplicada a un problema operativo real · Google Apps Script · JavaScript · HTML/CSS · Calendar · Sheets**
 
 **Problema:** solicitudes manuales y coordinación fragmentada del uso de una sala compartida.  
@@ -23,7 +23,7 @@ Me interesa trabajar en proyectos de **automatización administrativa, inteligen
 **Impacto reportado:** ahorro estimado cercano al **80 % del tiempo administrativo** dedicado a coordinar reservas durante el uso inicial (estimación operativa no auditada).  
 **Mi contribución:** diagnóstico del proceso, requisitos, diseño funcional, desarrollo asistido por IA, integración e implementación.
 
-[**Ver caso de negocio, arquitectura y código**](sala13-reservas-inteligentes/README.md) · [**Ver aplicación institucional**](https://tinyurl.com/sala13idei)
+[**Ver caso de negocio, arquitectura y código**](https://github.com/MASilva1/sala13-booking-system) · [**Ver aplicación institucional**](https://tinyurl.com/sala13idei)
 
 ### 02 · [Gestión inteligente de solicitudes administrativas — IDEI](portfolio/idei-gestion-solicitudes-ia/README.md)
 **Prototipo académico con caso de uso administrativo · n8n · GPT-4o-mini · Gmail · Airtable · Notion · Slack**
