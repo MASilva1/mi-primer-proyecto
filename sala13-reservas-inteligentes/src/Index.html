@@ -1,0 +1,1286 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.19/locales-all.global.min.js"></script>
+  <style>
+    :root {
+      --navy: #123b5d;
+      --blue: #155e75;
+      --orange: #f28c28;
+      --ink: #17324d;
+      --muted: #617487;
+      --line: #dce5eb;
+      --soft: #f4f7f9;
+      --warn: #fff4e5;
+      --success: #e9f8ef;
+      --danger: #b42318;
+      --shadow: 0 16px 45px rgba(18, 59, 93, .11);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background: linear-gradient(140deg, #f4f8fb 0%, #fff 52%, #fff7ef 100%); }
+    .topbar { height: 8px; background: linear-gradient(90deg, var(--navy) 0 78%, var(--orange) 78%); }
+    header { max-width: 1320px; margin: 0 auto; padding: 34px 28px 20px; display: flex; align-items: center; justify-content: space-between; gap: 22px; }
+    .brand { display: flex; align-items: center; gap: 16px; }
+    h1 { margin: 0; font-size: clamp(25px, 3vw, 40px); letter-spacing: -.04em; }
+    .subtitle { margin: 5px 0 0; color: var(--muted); }
+    .room-pill { border: 1px solid #f1d5b3; background: #fff9f2; color: #945011; padding: 9px 13px; border-radius: 999px; font-weight: 750; white-space: nowrap; }
+    main { max-width: 1320px; margin: 0 auto; padding: 0 28px 48px; }
+    .notice { margin: 5px 0 26px; padding: 22px 24px; border: 2px solid #efb66e; border-left: 8px solid var(--orange); border-radius: 16px; background: linear-gradient(135deg, #fff1dc, #fff9f1); display: flex; gap: 16px; align-items: flex-start; box-shadow: 0 12px 30px rgba(183,91,13,.13); }
+    .notice-icon { width: 42px; height: 42px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: var(--orange); color: white; font-size: 21px; }
+    .notice h2 { margin: 0 0 8px; color: #7b3e0b; font-size: 19px; }
+    .notice ul { margin: 0; padding-left: 21px; display: grid; gap: 5px; color: #713b11; }
+    .notice li::marker { color: var(--orange); }
+    .layout { display: block; }
+    .card { background: rgba(255,255,255,.95); border: 1px solid rgba(220,229,235,.9); border-radius: 20px; box-shadow: var(--shadow); }
+    .calendar-card { padding: 22px; min-height: 690px; }
+    .form-card { padding: 24px; }
+    .card-title { margin: 0 0 4px; font-size: 21px; }
+    .card-lead { margin: 0 0 20px; color: var(--muted); font-size: 14px; }
+    .booking-instruction { margin: 12px 0 16px; padding: 13px 15px; border: 1px solid #b9d7e1; border-left: 5px solid var(--blue); border-radius: 11px; background: #eef7fa; color: var(--navy); font-size: 14px; line-height: 1.45; }
+    .booking-instruction strong { display: block; margin-bottom: 2px; font-size: 15px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field.full { grid-column: 1 / -1; }
+    label { font-size: 13px; font-weight: 750; color: #334e68; }
+    input, select, textarea { width: 100%; border: 1px solid #cbd8e1; border-radius: 10px; background: white; color: var(--ink); padding: 11px 12px; font: inherit; font-size: 14px; outline: none; transition: .18s ease; }
+    input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21,94,117,.12); }
+    textarea { min-height: 86px; resize: vertical; }
+    .rules { grid-column: 1 / -1; padding: 12px; border-radius: 11px; background: var(--soft); display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: #445e72; }
+    .rules input { width: 17px; height: 17px; margin: 1px 0 0; flex: 0 0 auto; }
+    .schedule-panel { grid-column: 1 / -1; padding: 14px; border: 1px solid #c8dce5; border-radius: 11px; background: #f4f9fb; }
+    .schedule-panel p { margin: 0 0 10px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .weekday-picker { display: flex; flex-wrap: wrap; gap: 8px; }
+    .weekday-option { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border: 1px solid #bfd1dc; border-radius: 9px; background: #fff; cursor: pointer; }
+    .weekday-option input { width: 16px; height: 16px; margin: 0; }
+    .btn { border: 0; border-radius: 11px; padding: 12px 18px; font: inherit; font-weight: 800; cursor: pointer; transition: .18s ease; }
+    .btn-primary { grid-column: 1 / -1; background: var(--navy); color: white; box-shadow: 0 8px 20px rgba(18,59,93,.18); }
+    .btn-primary:hover { background: #0c304d; transform: translateY(-1px); }
+    .btn-secondary { grid-column: 1 / -1; background: white; color: var(--navy); border: 1px solid #b8c9d5; }
+    .btn-secondary:hover { background: #f1f6f9; border-color: var(--blue); }
+    .btn:disabled { opacity: .58; cursor: wait; transform: none; }
+    .message { display: none; margin: 0 0 16px; padding: 13px 14px; border-radius: 11px; font-size: 14px; }
+    .message.show { display: block; }
+    .message.success { background: var(--success); border: 1px solid #b7e4c7; color: #146c3b; }
+    .message.error { background: #fff1f0; border: 1px solid #ffc9c5; color: var(--danger); }
+    .message.conflict { background: #fff0ed; border: 2px solid #d92d20; color: #8a1c13; font-size: 15px; font-weight: 800; box-shadow: 0 8px 20px rgba(180,35,24,.12); }
+    .privacy { margin: 13px 0 0; text-align: center; color: var(--muted); font-size: 12px; }
+    .fc { --fc-border-color: #dce5eb; --fc-button-bg-color: #123b5d; --fc-button-border-color: #123b5d; --fc-button-hover-bg-color: #0c304d; --fc-button-hover-border-color: #0c304d; --fc-button-active-bg-color: #f28c28; --fc-button-active-border-color: #f28c28; --fc-today-bg-color: rgba(242,140,40,.08); font-size: 14px; }
+    .fc .fc-toolbar-title { font-size: 20px; color: var(--navy); }
+    .fc .fc-button { border-radius: 8px; font-weight: 700; box-shadow: none !important; }
+    .fc-event { border-radius: 6px; padding: 2px 3px; }
+    .calendar-event-compact { min-width: 0; overflow: hidden; line-height: 1.2; }
+    .calendar-event-time { display: block; font-size: 11px; font-weight: 850; white-space: nowrap; }
+    .calendar-event-area { display: block; margin-top: 2px; font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .calendar-list-area { font-weight: 750; color: var(--ink); }
+    .fc .fc-list-event-time { white-space: nowrap; font-weight: 800; color: var(--navy); }
+    .fc .fc-list-day-cushion { background: #eef4f7; color: var(--navy); }
+    .fc .fc-daygrid-day.has-reservations { background-color: #eaf3f6; }
+    .fc .fc-daygrid-day.has-reservations.fc-day-today { box-shadow: inset 0 0 0 2px #dfa862; }
+    .fc .fc-daygrid-day.is-closed-day, .fc .fc-timegrid-col.is-closed-day { background: #f5e8e4 !important; }
+    .fc .fc-daygrid-day.is-closed-day.fc-day-today { box-shadow: inset 0 0 0 2px #c77762; }
+    .calendar-legend { display: flex; align-items: flex-start; gap: 8px; color: var(--muted); font-size: 12px; margin: 0 0 16px; }
+    .legend-swatch { width: 18px; height: 18px; flex: 0 0 auto; border: 1px solid #c3dbe4; border-radius: 4px; background: #eaf3f6; }
+    .legend-swatch.closed { border-color: #dcb9af; background: #f5e8e4; }
+    .btn-cancel { grid-column: 1 / -1; background: #fff4f2; color: #96372e; border: 1px solid #e5c3be; }
+    .cancellation-panel { margin-top: 16px; padding: 16px; background: #fff9f7; border: 1px solid #ead3ca; border-radius: 12px; }
+    .cancellation-panel h3 { margin: 0 0 8px; }
+    .cancellation-panel p { font-size: 14px; line-height: 1.5; }
+    .loading { position: fixed; inset: 0; background: rgba(244,247,249,.67); backdrop-filter: blur(2px); display: none; place-items: center; z-index: 10; }
+    .loading.show { display: grid; }
+    .spinner { width: 44px; height: 44px; border: 4px solid #d5e0e7; border-top-color: var(--orange); border-radius: 50%; animation: spin .8s linear infinite; }
+    dialog { width: min(570px, calc(100% - 28px)); max-height: calc(100vh - 32px); overflow: auto; border: 0; border-radius: 20px; padding: 0; color: var(--ink); box-shadow: 0 28px 80px rgba(12,48,77,.3); }
+    dialog::backdrop { background: rgba(10,35,54,.58); backdrop-filter: blur(3px); }
+    .dialog-body { padding: 24px; }
+    .dialog-head { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; margin-bottom: 20px; }
+    .dialog-head h2 { margin: 0 0 5px; font-size: 23px; }
+    .dialog-head p { margin: 0; color: var(--muted); font-size: 14px; }
+    .icon-btn { width: 36px; height: 36px; flex: 0 0 auto; display: grid; place-items: center; border: 0; border-radius: 50%; background: var(--soft); color: var(--ink); font-size: 22px; cursor: pointer; }
+    .reservation-found { grid-column: 1 / -1; padding: 13px 14px; border-radius: 11px; background: #eef7fa; border: 1px solid #c3dfe7; font-size: 14px; line-height: 1.5; }
+    .dialog-actions { grid-column: 1 / -1; display: flex; gap: 10px; }
+    .dialog-actions .btn { flex: 1; }
+    .reservation-dialog { width: min(650px, calc(100% - 28px)); }
+    .action-dialog { width: min(500px, calc(100% - 28px)); }
+    .selection-summary { margin: 0 0 18px; padding: 13px 14px; border: 1px solid #c3dfe7; border-radius: 11px; background: #eef7fa; color: var(--navy); font-weight: 800; line-height: 1.45; }
+    .action-grid { display: grid; gap: 11px; }
+    .action-grid .btn { width: 100%; grid-column: auto; text-align: left; }
+    .action-grid small { display: block; margin-top: 3px; font-weight: 500; opacity: .82; }
+    .future-list-dialog { width: min(780px, calc(100% - 28px)); }
+    .future-list-meta { margin: -6px 0 16px; color: var(--muted); font-size: 14px; }
+    .future-list { display: grid; gap: 10px; }
+    .future-list-item { display: grid; grid-template-columns: minmax(190px, 1.1fr) 110px minmax(180px, 1fr) auto; gap: 15px; align-items: center; padding: 14px 16px; border: 1px solid #d7e4ea; border-left: 5px solid var(--blue); border-radius: 12px; background: #f8fbfc; }
+    .future-list-item.is-pending-confirmation { border-left-color: #d58a26; background: #fffaf2; }
+    .future-list-date { font-weight: 800; color: var(--navy); text-transform: capitalize; }
+    .future-list-time { font-weight: 850; color: var(--blue); white-space: nowrap; }
+    .future-list-area { color: var(--ink); }
+    .future-list-area strong { display: block; margin-bottom: 2px; font-size: 12px; color: var(--muted); }
+    .future-list-status { justify-self: end; padding: 6px 9px; border-radius: 999px; background: #e6f4ea; color: #17633a; font-size: 11px; font-weight: 850; white-space: nowrap; }
+    .future-list-status.pending { background: #fff0cf; color: #80510e; }
+    .future-list-empty { padding: 28px 18px; border-radius: 12px; background: var(--soft); text-align: center; color: var(--muted); }
+    .future-list-refresh { width: auto; margin: 0 0 16px; padding: 9px 13px; }
+    .reminder-dialog { width: min(620px, calc(100% - 28px)); }
+    .reminder-summary { margin: 0 0 18px; padding: 15px 16px; border: 1px solid #c3dfe7; border-radius: 12px; background: #eef7fa; line-height: 1.6; }
+    .reminder-action-grid { display: grid; gap: 11px; }
+    .reminder-action-grid .btn { width: 100%; grid-column: auto; }
+    .btn-confirm { background: #18794e; color: #fff; }
+    .btn-confirm:hover { background: #12643f; }
+    .reminder-warning { padding: 13px 14px; border-radius: 11px; background: #fff4e5; color: #71420b; font-size: 14px; line-height: 1.5; }
+    [hidden] { display: none !important; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 980px) {
+      header { align-items: flex-start; }
+      .room-pill { display: none; }
+      .calendar-card { min-height: 620px; }
+    }
+    @media (max-width: 620px) {
+      header, main { padding-left: 16px; padding-right: 16px; }
+      header { padding-top: 24px; }
+      .calendar-card, .form-card { padding: 16px; border-radius: 15px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field.full, .rules, .btn-primary { grid-column: auto; }
+      .fc .fc-toolbar { align-items: flex-start; gap: 10px; }
+      .fc .fc-toolbar.fc-header-toolbar { flex-direction: column; }
+      .fc .fc-toolbar-chunk:last-child { display: flex; width: 100%; }
+      .fc .fc-toolbar-chunk:last-child .fc-button-group { display: flex; width: 100%; }
+      .fc .fc-toolbar-chunk:last-child .fc-button { flex: 1; padding: 7px 5px; font-size: 12px; }
+      .fc .fc-toolbar-title { font-size: 18px; }
+      .fc .fc-col-header-cell-cushion { font-size: 11px; padding: 4px 1px; }
+      .fc .fc-daygrid-day-number { font-size: 12px; padding: 4px; }
+      .fc .fc-daygrid-event { font-size: 10px; line-height: 1.2; }
+      .fc .fc-daygrid-day-frame { min-height: 56px; }
+      .future-list-item { grid-template-columns: 1fr; gap: 5px; }
+      .future-list-status { justify-self: start; margin-top: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="appContext" hidden data-reminder-token="<?= reminderToken ?>" data-reminder-action="<?= reminderAction ?>"></div>
+  <div class="topbar"></div>
+  <header>
+    <div class="brand">
+      <div>
+        <h1>Reservas Sala 13</h1>
+        <p class="subtitle">Instituto de Informática · Agenda institucional</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="notice" aria-label="Condiciones de uso">
+      <div class="notice-icon" aria-hidden="true">!</div>
+      <div>
+        <h2>Importante antes de reservar</h2>
+        <ul id="noticeList">
+          <li><strong>Uso exclusivo como sala de reuniones.</strong></li>
+          <li><strong>Capacidad máxima: 15 personas.</strong></li>
+          <li><strong>Prohíbido el ingreso con comida y/o bebidas.</strong></li>
+          <li><strong>No se puede cambiar la disposición de los escritorios.</strong></li>
+          <li><strong>Luego de su uso, se debe gestionar la limpieza de la sala con el personal de Ordenanza.</strong></li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="card calendar-card">
+        <h2 class="card-title">Disponibilidad</h2>
+        <p class="card-lead">Cada reserva muestra primero su horario y luego el área o gabinete.</p>
+        <p class="booking-instruction"><strong>¿Cómo hacer una reserva?</strong><b>Seleccioná un día, un rango de horas dentro del mismo día o varios días, ya sean consecutivos o separados. También podés arrastrar para seleccionar rápidamente días u horarios continuos.</b></p>
+        <div id="calendar"></div>
+      </section>
+
+      <dialog class="reservation-dialog" id="reservationDialog" aria-labelledby="reservationDialogTitle">
+        <div class="dialog-body form-card" id="reservePanel">
+        <div class="dialog-head">
+          <div>
+            <h2 id="reservationDialogTitle">Nueva reserva</h2>
+            <p>Las fechas elegidas ya están cargadas. Todos los campos son obligatorios.</p>
+          </div>
+          <button id="closeReservationDialog" class="icon-btn" type="button" aria-label="Cerrar">×</button>
+        </div>
+        <div id="message" class="message" role="status" aria-live="polite"></div>
+
+        <form id="reservationForm" class="form-grid">
+          <div class="field full">
+            <label for="requester">Nombre y apellido</label>
+            <input id="requester" name="requester" maxlength="120" autocomplete="name" required>
+          </div>
+          <div class="field full">
+            <label for="email">Correo electrónico</label>
+            <input id="email" name="email" type="email" maxlength="150" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="dependencyType">Procedencia</label>
+            <select id="dependencyType" name="dependencyType" required>
+              <option value="">Seleccionar</option>
+              <option>Área interna del IdeI</option>
+              <option>Área externa al IdeI</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="attendees">Cantidad de personas</label>
+            <input id="attendees" name="attendees" type="number" min="1" max="15" value="1" required>
+          </div>
+          <div class="field full">
+            <label for="area">Gabinete / Área solicitante</label>
+            <input id="area" name="area" maxlength="120" placeholder="Ej.: Gabinete de Sistemas de Información" required>
+          </div>
+          <div class="field full">
+            <label for="reason">Motivo de la reserva</label>
+            <textarea id="reason" name="reason" maxlength="600" placeholder="Describí brevemente la actividad o reunión" required></textarea>
+          </div>
+          <div class="field full">
+            <label for="scheduleMode">Modalidad de fechas</label>
+            <select id="scheduleMode" name="scheduleMode" required>
+              <option value="continuous">Período continuo — todos los días</option>
+              <option value="weekly">Días semanales seleccionados</option>
+            </select>
+          </div>
+          <div id="weeklyOptions" class="schedule-panel" hidden>
+            <p><strong>Elegí los días que se repetirán dentro del período.</strong> Los domingos no están disponibles y los feriados o asuetos se omitirán automáticamente.</p>
+            <div class="weekday-picker">
+              <label class="weekday-option"><input type="checkbox" value="1">Lunes</label>
+              <label class="weekday-option"><input type="checkbox" value="2">Martes</label>
+              <label class="weekday-option"><input type="checkbox" value="3">Miércoles</label>
+              <label class="weekday-option"><input type="checkbox" value="4">Jueves</label>
+              <label class="weekday-option"><input type="checkbox" value="5">Viernes</label>
+              <label class="weekday-option"><input type="checkbox" value="6">Sábado</label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="startDate">Fecha desde</label>
+            <input id="startDate" name="startDate" type="date" required>
+          </div>
+          <div class="field">
+            <label for="endDate">Fecha hasta</label>
+            <input id="endDate" name="endDate" type="date" required>
+          </div>
+          <div class="field full">
+            <small style="color:var(--muted)">El horario elegido se aplicará a todos los días incluidos en el período.</small>
+          </div>
+          <div class="field">
+            <label for="startTime">Desde</label>
+            <input id="startTime" name="startTime" type="time" min="08:00" max="20:30" step="1800" value="09:00" required>
+          </div>
+          <div class="field">
+            <label for="endTime">Hasta</label>
+            <input id="endTime" name="endTime" type="time" min="08:30" max="21:00" step="1800" value="10:00" required>
+          </div>
+          <label class="rules">
+            <input id="acceptedRules" name="acceptedRules" type="checkbox" required>
+            <span>Confirmo que respetaré la capacidad máxima de 15 personas, no cambiaré la disposición de los escritorios y gestionaré la limpieza luego del uso.</span>
+          </label>
+          <button id="submitBtn" class="btn btn-primary" type="submit">Confirmar reserva</button>
+        </form>
+        <p class="privacy">La agenda pública muestra fecha, horario y área o gabinete. No publica nombre, correo ni motivo.</p>
+        </div>
+      </dialog>
+    </div>
+  </main>
+
+  <dialog id="calendarActionDialog" class="action-dialog" aria-labelledby="calendarActionTitle">
+    <div class="dialog-body">
+      <div class="dialog-head">
+        <div>
+          <h2 id="calendarActionTitle">¿Qué querés hacer?</h2>
+          <p>Elegí una acción para continuar.</p>
+        </div>
+        <button id="closeCalendarActionDialog" class="icon-btn" type="button" aria-label="Cerrar">×</button>
+      </div>
+      <p id="calendarSelectionSummary" class="selection-summary"></p>
+      <div class="action-grid">
+        <button id="reserveActionBtn" class="btn btn-primary" type="button">Hacer una reserva<small>Completar la solicitud para la fecha seleccionada.</small></button>
+        <button id="modifyActionBtn" class="btn btn-secondary" type="button">Modificar una reserva<small>Cambiar las fechas u horarios de una reserva existente.</small></button>
+        <button id="cancelActionBtn" class="btn btn-cancel" type="button">Cancelar una reserva<small>Eliminar sus horarios con verificación por correo.</small></button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="futureListDialog" class="future-list-dialog" aria-labelledby="futureListTitle">
+    <div class="dialog-body">
+      <div class="dialog-head">
+        <div>
+          <h2 id="futureListTitle">Próximas reservas</h2>
+          <p>Ordenadas desde la más próxima. No se muestran eventos finalizados.</p>
+        </div>
+        <button id="closeFutureListDialog" class="icon-btn" type="button" aria-label="Cerrar">×</button>
+      </div>
+      <p id="futureListMeta" class="future-list-meta" role="status" aria-live="polite">Cargando reservas futuras…</p>
+      <button id="refreshFutureListBtn" class="btn btn-secondary future-list-refresh" type="button">Actualizar ahora</button>
+      <div id="futureListRows" class="future-list"></div>
+    </div>
+  </dialog>
+
+  <dialog id="editDialog" aria-labelledby="editDialogTitle">
+    <div class="dialog-body">
+      <div class="dialog-head">
+        <div>
+          <h2 id="editDialogTitle">Gestionar reserva</h2>
+          <p>Buscala por nombre o código e ingresá el correo utilizado al reservar.</p>
+        </div>
+        <button id="closeEditDialog" class="icon-btn" type="button" aria-label="Cerrar">×</button>
+      </div>
+
+      <div id="editMessage" class="message" role="status" aria-live="polite"></div>
+
+      <section id="lookupStage">
+        <form id="lookupForm" class="form-grid">
+          <div class="field full">
+            <label for="lookupIdentifier">Nombre completo o código de reserva</label>
+            <input id="lookupIdentifier" maxlength="120" placeholder="Ej.: Matías Silva o A1B2C3D4" required>
+          </div>
+          <div class="field full">
+            <label for="lookupEmail">Correo utilizado en la reserva</label>
+            <input id="lookupEmail" type="email" maxlength="150" autocomplete="email" required>
+          </div>
+          <button id="lookupBtn" class="btn btn-primary" type="submit">Buscar reserva</button>
+        </form>
+      </section>
+
+      <form id="editForm" class="form-grid" hidden>
+        <input id="editCode" type="hidden">
+        <input id="editEmail" type="hidden">
+        <div id="reservationFound" class="reservation-found"></div>
+        <div class="field full"><label for="editScheduleMode">Modalidad de fechas</label><select id="editScheduleMode" required><option value="continuous">Período continuo — todos los días</option><option value="weekly">Días semanales seleccionados</option></select></div>
+        <div id="editWeeklyOptions" class="schedule-panel" hidden>
+          <p><strong>Elegí los días que se repetirán.</strong> Los feriados y asuetos se omitirán automáticamente.</p>
+          <div class="weekday-picker">
+            <label class="weekday-option"><input type="checkbox" value="1">Lunes</label><label class="weekday-option"><input type="checkbox" value="2">Martes</label><label class="weekday-option"><input type="checkbox" value="3">Miércoles</label><label class="weekday-option"><input type="checkbox" value="4">Jueves</label><label class="weekday-option"><input type="checkbox" value="5">Viernes</label><label class="weekday-option"><input type="checkbox" value="6">Sábado</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="editStartDate">Nueva fecha desde</label>
+          <input id="editStartDate" type="date" required>
+        </div>
+        <div class="field">
+          <label for="editEndDate">Nueva fecha hasta</label>
+          <input id="editEndDate" type="date" required>
+        </div>
+        <div class="field">
+          <label for="editStartTime">Nuevo horario desde</label>
+          <input id="editStartTime" type="time" min="08:00" max="20:30" step="1800" required>
+        </div>
+        <div class="field">
+          <label for="editEndTime">Nuevo horario hasta</label>
+          <input id="editEndTime" type="time" min="08:30" max="21:00" step="1800" required>
+        </div>
+        <label class="rules">
+          <input id="editAcceptedRules" type="checkbox" required>
+          <span>Confirmo nuevamente las condiciones de capacidad, disposición del mobiliario y limpieza.</span>
+        </label>
+        <div class="dialog-actions">
+          <button id="backToLookup" class="btn btn-secondary" type="button">Volver</button>
+          <button id="updateBtn" class="btn btn-primary" type="submit">Guardar cambios</button>
+        </div>
+        <button id="openCancelBtn" class="btn btn-cancel" type="button">Cancelar esta reserva</button>
+      </form>
+      <section id="cancelStage" class="cancellation-panel" hidden aria-labelledby="cancelTitle">
+        <h3 id="cancelTitle">Cancelar reserva</h3>
+        <p id="cancelSummary"></p>
+        <p>Se eliminarán <strong>todos los días y horarios de esta reserva</strong> del calendario. El registro administrativo se conservará como cancelado. Esta acción no se puede deshacer.</p>
+        <p>Para comprobar que sos el solicitante, te enviaremos un código al correo registrado.</p>
+        <button id="sendCancelCodeBtn" class="btn btn-secondary" type="button">Enviar código al correo</button>
+        <form id="cancelForm" class="form-grid" hidden style="margin-top:16px">
+          <div class="field full">
+            <label for="cancelPin">Código de verificación recibido por correo</label>
+            <input id="cancelPin" autocomplete="one-time-code" maxlength="8" minlength="8" pattern="[A-Fa-f0-9]{8}" required placeholder="8 letras y números">
+          </div>
+          <label class="rules">
+            <input id="cancelConfirmed" type="checkbox" required>
+            <span>Confirmo que quiero cancelar todos los días de esta reserva.</span>
+          </label>
+          <button id="confirmCancelBtn" class="btn btn-cancel" type="submit">Confirmar cancelación definitiva</button>
+        </form>
+        <button id="backFromCancelBtn" class="btn btn-secondary" type="button" style="margin-top:12px">Volver sin cancelar</button>
+      </section>
+    </div>
+  </dialog>
+
+  <dialog id="reminderDialog" class="reminder-dialog" aria-labelledby="reminderDialogTitle">
+    <div class="dialog-body">
+      <div class="dialog-head">
+        <div>
+          <h2 id="reminderDialogTitle">Gestionar reserva</h2>
+          <p>Acceso seguro desde el recordatorio enviado por correo.</p>
+        </div>
+        <button id="closeReminderDialog" class="icon-btn" type="button" aria-label="Cerrar">×</button>
+      </div>
+      <div id="reminderMessage" class="message" role="status" aria-live="polite"></div>
+      <p id="reminderLoading">Comprobando el enlace…</p>
+      <section id="reminderContent" hidden>
+        <div id="reminderSummary" class="reminder-summary"></div>
+        <div id="reminderChoices" class="reminder-action-grid">
+          <button id="reminderConfirmBtn" class="btn btn-confirm" type="button">Confirmar reserva</button>
+          <button id="reminderModifyBtn" class="btn btn-secondary" type="button">Modificar fechas u horarios</button>
+          <button id="reminderCancelBtn" class="btn btn-cancel" type="button">Cancelar reserva</button>
+        </div>
+        <form id="reminderEditForm" class="form-grid" hidden>
+          <div class="field full"><label for="reminderScheduleMode">Modalidad de fechas</label><select id="reminderScheduleMode" required><option value="continuous">Período continuo — todos los días</option><option value="weekly">Días semanales seleccionados</option></select></div>
+          <div id="reminderWeeklyOptions" class="schedule-panel" hidden>
+            <p><strong>Elegí los días que se repetirán.</strong> Los feriados y asuetos se omitirán automáticamente.</p>
+            <div class="weekday-picker">
+              <label class="weekday-option"><input type="checkbox" value="1">Lunes</label><label class="weekday-option"><input type="checkbox" value="2">Martes</label><label class="weekday-option"><input type="checkbox" value="3">Miércoles</label><label class="weekday-option"><input type="checkbox" value="4">Jueves</label><label class="weekday-option"><input type="checkbox" value="5">Viernes</label><label class="weekday-option"><input type="checkbox" value="6">Sábado</label>
+            </div>
+          </div>
+          <div class="field"><label for="reminderStartDate">Fecha desde</label><input id="reminderStartDate" type="date" required></div>
+          <div class="field"><label for="reminderEndDate">Fecha hasta</label><input id="reminderEndDate" type="date" required></div>
+          <div class="field"><label for="reminderStartTime">Horario desde</label><input id="reminderStartTime" type="time" min="08:00" max="20:30" step="1800" required></div>
+          <div class="field"><label for="reminderEndTime">Horario hasta</label><input id="reminderEndTime" type="time" min="08:30" max="21:00" step="1800" required></div>
+          <label class="rules"><input id="reminderAcceptedRules" type="checkbox" required><span>Confirmo nuevamente las condiciones de capacidad, mobiliario y limpieza.</span></label>
+          <div class="dialog-actions"><button id="reminderEditBackBtn" class="btn btn-secondary" type="button">Volver</button><button id="reminderEditSubmitBtn" class="btn btn-primary" type="submit">Guardar y confirmar</button></div>
+        </form>
+        <section id="reminderCancelStage" hidden>
+          <p class="reminder-warning"><strong>Esta acción liberará todos los días y horarios de la reserva.</strong> El registro administrativo quedará conservado como cancelado.</p>
+          <div class="dialog-actions"><button id="reminderCancelBackBtn" class="btn btn-secondary" type="button">Volver</button><button id="reminderCancelConfirmBtn" class="btn btn-cancel" type="button">Sí, cancelar definitivamente</button></div>
+        </section>
+      </section>
+    </div>
+  </dialog>
+
+  <div id="loading" class="loading" aria-hidden="true"><div class="spinner" aria-label="Cargando"></div></div>
+
+  <script>
+    const state = { calendar: null, lastRange: null, config: null, occupiedDays: new Set(), closedDays: new Map(), limitedDays: new Map(), cancellationChallenge: null, managementBusy: false, managementMode: 'modify', reservationBusy: false, loadSequence: 0, futureListSequence: 0, futureListTimer: null, reminderToken: '', reminderAction: '', reminderReservation: null, reminderBusy: false };
+    const $ = (id) => document.getElementById(id);
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const today = localIsoDate(new Date());
+      $('startDate').min = today;
+      $('endDate').min = today;
+      $('startDate').value = today;
+      $('endDate').value = today;
+      $('startDate').addEventListener('change', syncEndDate);
+      $('scheduleMode').addEventListener('change', function () { toggleScheduleOptions('scheduleMode', 'weeklyOptions'); });
+      $('editScheduleMode').addEventListener('change', function () { toggleScheduleOptions('editScheduleMode', 'editWeeklyOptions'); });
+      $('reminderScheduleMode').addEventListener('change', function () { toggleScheduleOptions('reminderScheduleMode', 'reminderWeeklyOptions'); });
+      syncEndDate();
+      toggleScheduleOptions('scheduleMode', 'weeklyOptions');
+
+      state.calendar = new FullCalendar.Calendar($('calendar'), {
+        locale: 'es',
+        timeZone: 'local',
+        initialView: window.innerWidth < 620 ? 'dayGridMonth' : 'timeGridWeek',
+        firstDay: 1,
+        allDaySlot: false,
+        nowIndicator: true,
+        selectable: true,
+        selectMirror: true,
+        selectOverlap: false,
+        selectLongPressDelay: 350,
+        slotMinTime: '08:00:00',
+        slotMaxTime: '21:00:00',
+        slotDuration: '00:30:00',
+        slotLabelInterval: '01:00:00',
+        displayEventEnd: true,
+        eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
+        dayMaxEvents: 2,
+        fixedWeekCount: false,
+        height: 'auto',
+        views: {
+          listWeek: {
+            displayEventEnd: true,
+            listDayFormat: { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' },
+            listDaySideFormat: false
+          }
+        },
+        customButtons: {
+          futureList: { text: 'Lista', click: openFutureList }
+        },
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'timeGridWeek,dayGridMonth futureList'
+        },
+        buttonText: { today: 'Hoy', week: 'Semana', month: 'Mes', list: 'Lista' },
+        datesSet: function (info) {
+          state.lastRange = { start: info.startStr, end: info.endStr };
+          loadEvents(info.startStr, info.endStr);
+        },
+        select: function (info) {
+          if (info.allDay) {
+            $('startDate').value = localIsoDate(info.start);
+            const inclusiveEnd = new Date(info.end.getTime() - 86400000);
+            $('endDate').value = localIsoDate(inclusiveEnd);
+          } else {
+            fillDateTime(info.start, info.end);
+          }
+          openCalendarActions();
+        },
+        dateClick: function (info) {
+          $('startDate').value = info.dateStr.slice(0, 10);
+          $('endDate').value = info.dateStr.slice(0, 10);
+          if (!info.allDay) {
+            $('startTime').value = localTime(info.date);
+            const end = new Date(info.date.getTime() + 60 * 60 * 1000);
+            $('endTime').value = localTime(end);
+          } else {
+            $('startTime').value = '09:00';
+            $('endTime').value = '10:00';
+          }
+          openCalendarActions();
+        },
+        eventClick: function (info) {
+          $('startDate').value = localIsoDate(info.event.start);
+          $('endDate').value = localIsoDate(info.event.start);
+          $('startTime').value = localTime(info.event.start);
+          $('endTime').value = localTime(info.event.end);
+          openCalendarActions();
+        },
+        eventDidMount: function (info) {
+          const parts = calendarEventParts(info.event);
+          info.el.title = parts.time + ' · Área o gabinete: ' + parts.area;
+          info.el.setAttribute('aria-label', info.el.title);
+        },
+        eventContent: function (info) {
+          const parts = calendarEventParts(info.event);
+          if (info.view.type === 'dayGridMonth') {
+            const content = document.createElement('div');
+            content.className = 'calendar-event-compact';
+            const time = document.createElement('strong');
+            time.className = 'calendar-event-time';
+            time.textContent = parts.time;
+            const area = document.createElement('span');
+            area.className = 'calendar-event-area';
+            area.textContent = parts.area;
+            content.append(time, area);
+            return { domNodes: [content] };
+          }
+          if (info.view.type === 'listWeek') {
+            const area = document.createElement('span');
+            area.className = 'calendar-list-area';
+            area.textContent = 'Área / gabinete: ' + parts.area;
+            return { domNodes: [area] };
+          }
+          const content = document.createElement('div');
+          content.className = 'calendar-event-compact';
+          const time = document.createElement('strong');
+          time.className = 'calendar-event-time';
+          time.textContent = parts.time;
+          const area = document.createElement('span');
+          area.className = 'calendar-event-area';
+          area.textContent = parts.area;
+          content.append(time, area);
+          return { domNodes: [content] };
+        },
+        eventsSet: function (events) {
+          state.occupiedDays = occupiedDateKeys(events);
+          paintOccupiedDays();
+        },
+        dayCellDidMount: function (info) {
+          info.el.classList.toggle('has-reservations', state.occupiedDays.has(localIsoDate(info.date)));
+          applyClosedDayStyle(info.el, localIsoDate(info.date));
+        }
+      });
+      state.calendar.render();
+      $('reservationForm').addEventListener('submit', submitReservation);
+      $('closeReservationDialog').addEventListener('click', closeReservationDialog);
+      $('reservationDialog').addEventListener('cancel', function (event) {
+        if (state.reservationBusy) event.preventDefault();
+      });
+      $('reservationDialog').addEventListener('click', function (event) {
+        if (event.target === $('reservationDialog')) closeReservationDialog();
+      });
+      $('closeCalendarActionDialog').addEventListener('click', closeCalendarActions);
+      $('calendarActionDialog').addEventListener('click', function (event) {
+        if (event.target === $('calendarActionDialog')) closeCalendarActions();
+      });
+      $('reserveActionBtn').addEventListener('click', function () {
+        closeCalendarActions();
+        openReservationDialog();
+      });
+      $('modifyActionBtn').addEventListener('click', function () {
+        closeCalendarActions();
+        openEditDialog('modify');
+      });
+      $('cancelActionBtn').addEventListener('click', function () {
+        closeCalendarActions();
+        openEditDialog('cancel');
+      });
+      $('closeFutureListDialog').addEventListener('click', closeFutureList);
+      $('refreshFutureListBtn').addEventListener('click', refreshFutureList);
+      $('futureListDialog').addEventListener('click', function (event) {
+        if (event.target === $('futureListDialog')) closeFutureList();
+      });
+      $('closeEditDialog').addEventListener('click', closeEditDialog);
+      $('backToLookup').addEventListener('click', resetEditFlow);
+      $('lookupForm').addEventListener('submit', lookupReservation);
+      $('editForm').addEventListener('submit', submitReservationUpdate);
+      $('editStartDate').addEventListener('change', syncEditEndDate);
+      $('openCancelBtn').addEventListener('click', openCancellation);
+      $('sendCancelCodeBtn').addEventListener('click', sendCancellationCode);
+      $('cancelForm').addEventListener('submit', submitCancellation);
+      $('backFromCancelBtn').addEventListener('click', function () {
+        $('cancelStage').hidden = true;
+        if (state.managementMode === 'cancel') {
+          resetEditFlow();
+        } else {
+          $('editForm').hidden = false;
+          hideEditMessage();
+        }
+      });
+      $('editDialog').addEventListener('cancel', function (event) {
+        if (state.managementBusy) event.preventDefault();
+      });
+      $('editDialog').addEventListener('click', function (event) {
+        if (event.target === $('editDialog')) closeEditDialog();
+      });
+      $('closeReminderDialog').addEventListener('click', closeReminderDialog);
+      $('reminderDialog').addEventListener('cancel', function (event) {
+        if (state.reminderBusy) event.preventDefault();
+      });
+      $('reminderDialog').addEventListener('click', function (event) {
+        if (event.target === $('reminderDialog')) closeReminderDialog();
+      });
+      $('reminderConfirmBtn').addEventListener('click', confirmFromReminder);
+      $('reminderModifyBtn').addEventListener('click', function () { showReminderMode('modify'); });
+      $('reminderCancelBtn').addEventListener('click', function () { showReminderMode('cancel'); });
+      $('reminderEditBackBtn').addEventListener('click', function () { showReminderMode('choices'); });
+      $('reminderCancelBackBtn').addEventListener('click', function () { showReminderMode('choices'); });
+      $('reminderEditForm').addEventListener('submit', updateFromReminder);
+      $('reminderStartDate').addEventListener('change', syncReminderEndDate);
+      $('reminderCancelConfirmBtn').addEventListener('click', cancelFromReminder);
+
+      const context = $('appContext').dataset;
+      if (/^[a-f0-9]{64}$/i.test(context.reminderToken || '')) {
+        setTimeout(function () { openReminderFlow(context.reminderToken, context.reminderAction); }, 100);
+      }
+    });
+
+    function loadEvents(start, end) {
+      const sequence = ++state.loadSequence;
+      setLoading(true);
+      google.script.run
+        .withSuccessHandler(function (data) {
+          if (sequence !== state.loadSequence) return;
+          state.config = data.config;
+          state.closedDays = new Map((data.closedDays || []).map(function (day) { return [day.date, day]; }));
+          state.limitedDays = new Map((data.limitedDays || []).map(function (day) { return [day.date, day]; }));
+          renderNotice(data.config.noticeItems);
+          $('attendees').max = data.config.maxCapacity;
+          state.calendar.getEventSources().forEach(function (source) { source.remove(); });
+          state.calendar.addEventSource(data.events);
+          paintClosedDays();
+          setLoading(false);
+        })
+        .withFailureHandler(function (error) {
+          if (sequence !== state.loadSequence) return;
+          showMessage(readError(error), 'error');
+          setLoading(false);
+        })
+        .getAppData(start, end);
+    }
+
+    function submitReservation(event) {
+      event.preventDefault();
+      hideMessage();
+      const form = event.currentTarget;
+      if (!form.reportValidity()) return;
+      const data = Object.fromEntries(new FormData(form).entries());
+      data.attendees = Number(data.attendees);
+      data.scheduleMode = $('scheduleMode').value;
+      data.weekdays = checkedWeekdays('weeklyOptions');
+      if (data.scheduleMode === 'weekly' && !data.weekdays.length) {
+        showMessage('Seleccioná al menos un día de la semana.', 'error');
+        return;
+      }
+      data.acceptedRules = $('acceptedRules').checked;
+      setSubmitting(true);
+
+      google.script.run
+        .withSuccessHandler(function (result) {
+          showMessage(result.message + ' Código: ' + result.code + '. ' + result.notice, 'success');
+          const keepEmail = $('email').value;
+          const keepName = $('requester').value;
+          form.reset();
+          $('email').value = keepEmail;
+          $('requester').value = keepName;
+          $('attendees').value = 1;
+          $('startDate').value = localIsoDate(new Date());
+          $('endDate').value = localIsoDate(new Date());
+          $('startDate').min = localIsoDate(new Date());
+          $('endDate').min = localIsoDate(new Date());
+          $('startTime').value = '09:00';
+          $('endTime').value = '10:00';
+          toggleScheduleOptions('scheduleMode', 'weeklyOptions');
+          setSubmitting(false);
+          if (state.lastRange) loadEvents(state.lastRange.start, state.lastRange.end);
+        })
+        .withFailureHandler(function (error) {
+          const message = readError(error);
+          showMessage(message, message.includes('se encuentra ocupada') ? 'error conflict' : 'error');
+          setSubmitting(false);
+          if (message.includes('se encuentra ocupada') && state.lastRange) {
+            loadEvents(state.lastRange.start, state.lastRange.end);
+          }
+        })
+        .createReservation(data);
+    }
+
+    function fillDateTime(start, end) {
+      $('startDate').value = localIsoDate(start);
+      $('endDate').value = localIsoDate(start);
+      $('startTime').value = localTime(start);
+      $('endTime').value = localTime(end);
+    }
+    function openCalendarActions() {
+      syncEndDate();
+      const restrictions = selectedRestrictions();
+      const singleDay = $('startDate').value === $('endDate').value;
+      $('reserveActionBtn').disabled = restrictions.length > 0 && singleDay;
+      $('reserveActionBtn').title = restrictions.length && singleDay ? 'La fecha u horario elegido no está disponible.' : '';
+      $('calendarSelectionSummary').textContent = selectionSummary() + (restrictions.length ?
+        (singleDay ? ' · No disponible: ' : ' · El período incluye fechas no disponibles; la modalidad semanal puede omitirlas: ') +
+        restrictions.map(function (day) { return day.label; }).join(', ') : '');
+      if (!$('calendarActionDialog').open) $('calendarActionDialog').showModal();
+    }
+    function closeCalendarActions() {
+      if ($('calendarActionDialog').open) $('calendarActionDialog').close();
+      if (state.calendar) state.calendar.unselect();
+    }
+    function openFutureList() {
+      const dialog = $('futureListDialog');
+      if (!dialog.open) dialog.showModal();
+      refreshFutureList();
+      clearInterval(state.futureListTimer);
+      state.futureListTimer = setInterval(refreshFutureList, 30000);
+    }
+    function refreshFutureList() {
+      const sequence = ++state.futureListSequence;
+      $('futureListMeta').textContent = 'Actualizando reservas futuras…';
+      $('refreshFutureListBtn').disabled = true;
+      google.script.run
+        .withSuccessHandler(function (events) {
+          if (sequence !== state.futureListSequence) return;
+          renderFutureList(events || []);
+          $('refreshFutureListBtn').disabled = false;
+        })
+        .withFailureHandler(function (error) {
+          if (sequence !== state.futureListSequence) return;
+          $('futureListMeta').textContent = 'No se pudo cargar la lista.';
+          const empty = document.createElement('div');
+          empty.className = 'future-list-empty';
+          empty.textContent = readError(error);
+          $('futureListRows').replaceChildren(empty);
+          $('refreshFutureListBtn').disabled = false;
+        })
+        .getFutureReservations();
+    }
+    function closeFutureList() {
+      clearInterval(state.futureListTimer);
+      state.futureListTimer = null;
+      state.futureListSequence++;
+      if ($('futureListDialog').open) $('futureListDialog').close();
+    }
+    function renderFutureList(events) {
+      const now = new Date();
+      const futureEvents = events.filter(function (event) {
+        return new Date(event.end) > now;
+      }).sort(function (a, b) {
+        return new Date(a.start) - new Date(b.start);
+      });
+      const pendingCount = futureEvents.filter(function (event) {
+        return !!(event.extendedProps && event.extendedProps.pendingConfirmation);
+      }).length;
+      $('futureListMeta').textContent = (futureEvents.length === 1 ?
+        '1 franja reservada para el futuro.' : futureEvents.length + ' franjas reservadas para el futuro.') +
+        (pendingCount ? ' ' + pendingCount + (pendingCount === 1 ? ' requiere confirmación.' : ' requieren confirmación.') : '');
+      if (!futureEvents.length) {
+        const empty = document.createElement('div');
+        empty.className = 'future-list-empty';
+        empty.textContent = 'No hay reservas futuras registradas.';
+        $('futureListRows').replaceChildren(empty);
+        return;
+      }
+      const rows = futureEvents.map(function (event) {
+        const item = document.createElement('article');
+        item.className = 'future-list-item';
+        const pending = !!(event.extendedProps && event.extendedProps.pendingConfirmation);
+        item.classList.toggle('is-pending-confirmation', pending);
+        const date = document.createElement('div');
+        date.className = 'future-list-date';
+        date.textContent = futureDateLabel(new Date(event.start));
+        const time = document.createElement('div');
+        time.className = 'future-list-time';
+        time.textContent = formatRange(new Date(event.start), new Date(event.end));
+        const area = document.createElement('div');
+        area.className = 'future-list-area';
+        const label = document.createElement('strong');
+        label.textContent = 'Área / gabinete';
+        const value = document.createElement('span');
+        value.textContent = (event.extendedProps && event.extendedProps.area) || event.title || 'Área no especificada';
+        area.append(label, value);
+        item.append(date, time, area);
+        if (pending) {
+          const status = document.createElement('div');
+          status.className = 'future-list-status pending';
+          status.textContent = 'Reserva a confirmar';
+          item.append(status);
+        }
+        return item;
+      });
+      $('futureListRows').replaceChildren.apply($('futureListRows'), rows);
+    }
+    function openReminderFlow(token, action) {
+      state.reminderToken = token;
+      state.reminderAction = ['confirm', 'modify', 'cancel'].includes(action) ? action : '';
+      state.reminderReservation = null;
+      $('reminderLoading').hidden = false;
+      $('reminderContent').hidden = true;
+      hideReminderMessage();
+      if (!$('reminderDialog').open) $('reminderDialog').showModal();
+      setReminderBusy(true);
+      google.script.run
+        .withSuccessHandler(function (reservation) {
+          state.reminderReservation = reservation;
+          $('reminderLoading').hidden = true;
+          $('reminderContent').hidden = false;
+          $('reminderSummary').textContent = reservation.status + ' · Código ' + reservation.code + ' · ' +
+            isoDateLabel(reservation.startDate) + (reservation.startDate === reservation.endDate ? '' :
+              ' al ' + isoDateLabel(reservation.endDate)) + ' · ' + reservation.startTime + '–' + reservation.endTime +
+            (reservation.scheduleMode === 'weekly' ? ' · ' + weekdayNames(reservation.weekdays).join(' y ') : '') +
+            ' · ' + reservation.area;
+          $('reminderStartDate').value = reservation.startDate;
+          $('reminderEndDate').value = reservation.endDate;
+          $('reminderStartTime').value = reservation.startTime;
+          $('reminderEndTime').value = reservation.endTime;
+          $('reminderScheduleMode').value = reservation.scheduleMode || 'continuous';
+          setCheckedWeekdays('reminderWeeklyOptions', reservation.weekdays || []);
+          toggleScheduleOptions('reminderScheduleMode', 'reminderWeeklyOptions');
+          const today = localIsoDate(new Date());
+          $('reminderStartDate').min = today;
+          $('reminderEndDate').min = today;
+          syncReminderEndDate();
+          setReminderBusy(false);
+          showReminderMode(state.reminderAction || 'choices');
+        })
+        .withFailureHandler(function (error) {
+          $('reminderLoading').hidden = true;
+          showReminderMessage(readError(error), 'error');
+          setReminderBusy(false);
+        })
+        .getReminderReservation(token);
+    }
+    function showReminderMode(mode) {
+      $('reminderChoices').hidden = mode === 'modify' || mode === 'cancel';
+      $('reminderEditForm').hidden = mode !== 'modify';
+      $('reminderCancelStage').hidden = mode !== 'cancel';
+      if (mode === 'confirm') {
+        $('reminderChoices').hidden = false;
+        $('reminderConfirmBtn').focus();
+      } else if (mode === 'modify') {
+        $('reminderStartDate').focus();
+      } else if (mode === 'cancel') {
+        $('reminderCancelConfirmBtn').focus();
+      }
+    }
+    function confirmFromReminder() {
+      hideReminderMessage();
+      setReminderBusy(true);
+      google.script.run
+        .withSuccessHandler(finishReminderAction)
+        .withFailureHandler(failReminderAction)
+        .confirmReservationFromReminder(state.reminderToken);
+    }
+    function updateFromReminder(event) {
+      event.preventDefault();
+      if (!event.currentTarget.reportValidity()) return;
+      if ($('reminderScheduleMode').value === 'weekly' && !checkedWeekdays('reminderWeeklyOptions').length) {
+        showReminderMessage('Seleccioná al menos un día de la semana.', 'error');
+        return;
+      }
+      hideReminderMessage();
+      setReminderBusy(true);
+      google.script.run
+        .withSuccessHandler(finishReminderAction)
+        .withFailureHandler(failReminderAction)
+        .updateReservationFromReminder({
+          token: state.reminderToken,
+          startDate: $('reminderStartDate').value,
+          endDate: $('reminderEndDate').value,
+          startTime: $('reminderStartTime').value,
+          endTime: $('reminderEndTime').value,
+          scheduleMode: $('reminderScheduleMode').value,
+          weekdays: checkedWeekdays('reminderWeeklyOptions'),
+          acceptedRules: $('reminderAcceptedRules').checked
+        });
+    }
+    function cancelFromReminder() {
+      hideReminderMessage();
+      setReminderBusy(true);
+      google.script.run
+        .withSuccessHandler(finishReminderAction)
+        .withFailureHandler(failReminderAction)
+        .cancelReservationFromReminder({ token: state.reminderToken, confirmed: true });
+    }
+    function finishReminderAction(result) {
+      setReminderBusy(false);
+      $('reminderContent').hidden = true;
+      state.reminderToken = '';
+      showReminderMessage(result.message + ' Código: ' + result.code + '.', 'success');
+      if (state.lastRange) loadEvents(state.lastRange.start, state.lastRange.end);
+      if ($('futureListDialog').open) refreshFutureList();
+    }
+    function failReminderAction(error) {
+      setReminderBusy(false);
+      showReminderMessage(readError(error), 'error');
+    }
+    function closeReminderDialog() {
+      if (!state.reminderBusy && $('reminderDialog').open) $('reminderDialog').close();
+    }
+    function setReminderBusy(disabled) {
+      state.reminderBusy = disabled;
+      ['closeReminderDialog', 'reminderConfirmBtn', 'reminderModifyBtn', 'reminderCancelBtn',
+        'reminderEditBackBtn', 'reminderEditSubmitBtn', 'reminderCancelBackBtn', 'reminderCancelConfirmBtn']
+        .forEach(function (id) { $(id).disabled = disabled; });
+      $('reminderDialog').setAttribute('aria-busy', String(disabled));
+      $('reminderConfirmBtn').textContent = disabled ? 'Procesando…' : 'Confirmar reserva';
+    }
+    function syncReminderEndDate() {
+      $('reminderEndDate').min = $('reminderStartDate').value || localIsoDate(new Date());
+      if (!$('reminderEndDate').value || $('reminderEndDate').value < $('reminderStartDate').value) {
+        $('reminderEndDate').value = $('reminderStartDate').value;
+      }
+    }
+    function showReminderMessage(text, type) {
+      const box = $('reminderMessage');
+      box.textContent = text;
+      box.className = 'message show ' + type;
+    }
+    function hideReminderMessage() { $('reminderMessage').className = 'message'; }
+    function futureDateLabel(date) {
+      return new Intl.DateTimeFormat('es-AR', {
+        weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
+      }).format(date);
+    }
+    function openReservationDialog() {
+      hideMessage();
+      if (!$('reservationDialog').open) $('reservationDialog').showModal();
+      setTimeout(function () { $('requester').focus(); }, 100);
+    }
+    function closeReservationDialog() {
+      if (!state.reservationBusy && $('reservationDialog').open) $('reservationDialog').close();
+    }
+    function openEditDialog(mode) {
+      resetEditFlow();
+      state.managementMode = mode === 'cancel' ? 'cancel' : 'modify';
+      $('editDialogTitle').textContent = state.managementMode === 'cancel' ? 'Cancelar reserva' : 'Modificar reserva';
+      $('lookupStage').querySelector('button[type="submit"]').textContent = 'Buscar reserva';
+      $('lookupEmail').value = $('email').value;
+      $('editDialog').showModal();
+      setTimeout(() => $('lookupIdentifier').focus(), 100);
+    }
+    function closeEditDialog() { if (!state.managementBusy) $('editDialog').close(); }
+    function resetEditFlow() {
+      $('lookupStage').hidden = false;
+      $('editForm').hidden = true;
+      $('cancelStage').hidden = true;
+      $('cancelForm').hidden = true;
+      $('cancelForm').reset();
+      state.cancellationChallenge = null;
+      state.cancellationPending = false;
+      $('lookupForm').reset();
+      $('editForm').reset();
+      toggleScheduleOptions('editScheduleMode', 'editWeeklyOptions');
+      hideEditMessage();
+      setEditBusy(false, 'lookup');
+      setEditBusy(false, 'update');
+    }
+    function lookupReservation(event) {
+      event.preventDefault();
+      hideEditMessage();
+      if (!event.currentTarget.reportValidity()) return;
+      const identifier = $('lookupIdentifier').value.trim();
+      const email = $('lookupEmail').value.trim();
+      setEditBusy(true, 'lookup');
+      google.script.run
+        .withSuccessHandler(function (reservation) {
+          const today = localIsoDate(new Date());
+          $('editCode').value = reservation.code;
+          $('editEmail').value = email;
+          $('editStartDate').min = today;
+          $('editEndDate').min = today;
+          $('editStartDate').value = reservation.startDate;
+          $('editEndDate').value = reservation.endDate;
+          $('editStartTime').value = reservation.startTime;
+          $('editEndTime').value = reservation.endTime;
+          $('editScheduleMode').value = reservation.scheduleMode || 'continuous';
+          setCheckedWeekdays('editWeeklyOptions', reservation.weekdays || []);
+          toggleScheduleOptions('editScheduleMode', 'editWeeklyOptions');
+          $('reservationFound').textContent = reservation.requester + ' · ' + reservation.area + ' · Código ' + reservation.code +
+            (reservation.scheduleMode === 'weekly' ? ' · Semanal: ' + weekdayNames(reservation.weekdays).join(' y ') : '');
+          state.cancellationPending = !!reservation.cancellationPending;
+          state.reservationSummary = $('reservationFound').textContent + ' · ' + reservation.startDate +
+            ' al ' + reservation.endDate + ' · ' + reservation.startTime + '–' + reservation.endTime;
+          $('lookupStage').hidden = true;
+          syncEditEndDate();
+          setEditBusy(false, 'lookup');
+          $('updateBtn').disabled = state.cancellationPending;
+          if (state.managementMode === 'cancel') {
+            openCancellation();
+          } else {
+            $('editForm').hidden = false;
+            $('openCancelBtn').hidden = true;
+          }
+          if (state.cancellationPending && state.managementMode !== 'cancel') {
+            showEditMessage('Esta reserva tiene una cancelación pendiente. Cerrá esta ventana, seleccioná nuevamente la fecha y elegí Cancelar una reserva para completarla.', 'error');
+          }
+        })
+        .withFailureHandler(function (error) {
+          showEditMessage(readError(error), 'error');
+          setEditBusy(false, 'lookup');
+        })
+        .getReservationForEdit(identifier, email);
+    }
+    function submitReservationUpdate(event) {
+      event.preventDefault();
+      hideEditMessage();
+      if (!event.currentTarget.reportValidity()) return;
+      if ($('editScheduleMode').value === 'weekly' && !checkedWeekdays('editWeeklyOptions').length) {
+        showEditMessage('Seleccioná al menos un día de la semana.', 'error');
+        return;
+      }
+      const payload = {
+        code: $('editCode').value,
+        email: $('editEmail').value,
+        startDate: $('editStartDate').value,
+        endDate: $('editEndDate').value,
+        startTime: $('editStartTime').value,
+        endTime: $('editEndTime').value,
+        scheduleMode: $('editScheduleMode').value,
+        weekdays: checkedWeekdays('editWeeklyOptions'),
+        acceptedRules: $('editAcceptedRules').checked
+      };
+      setEditBusy(true, 'update');
+      google.script.run
+        .withSuccessHandler(function (result) {
+          showEditMessage(result.message + ' Código: ' + result.code + '.', 'success');
+          setEditBusy(false, 'update');
+          state.reservationSummary = $('reservationFound').textContent + ' · ' + payload.startDate +
+            ' al ' + payload.endDate + ' · ' + payload.startTime + '–' + payload.endTime;
+          state.cancellationChallenge = null;
+          state.calendar.gotoDate(payload.startDate);
+          setTimeout(function () {
+            loadEvents(state.calendar.view.activeStart.toISOString(), state.calendar.view.activeEnd.toISOString());
+          }, 50);
+        })
+        .withFailureHandler(function (error) {
+          const message = readError(error);
+          showEditMessage(message, message.includes('se encuentra ocupada') ? 'error conflict' : 'error');
+          setEditBusy(false, 'update');
+          if (message.includes('se encuentra ocupada') && state.lastRange) {
+            loadEvents(state.lastRange.start, state.lastRange.end);
+          }
+        })
+        .updateReservation(payload);
+    }
+    function syncEditEndDate() {
+      $('editEndDate').min = $('editStartDate').value || localIsoDate(new Date());
+      if (!$('editEndDate').value || $('editEndDate').value < $('editStartDate').value) {
+        $('editEndDate').value = $('editStartDate').value;
+      }
+    }
+    function openCancellation() {
+      hideEditMessage();
+      $('editForm').hidden = true;
+      $('cancelStage').hidden = false;
+      $('cancelSummary').textContent = state.reservationSummary;
+      $('cancelForm').hidden = true;
+      $('cancelForm').reset();
+      state.cancellationChallenge = null;
+      $('sendCancelCodeBtn').textContent = 'Enviar código al correo';
+      $('sendCancelCodeBtn').focus();
+    }
+    function sendCancellationCode() {
+      hideEditMessage();
+      setManagementBusy(true);
+      google.script.run
+        .withSuccessHandler(function (result) {
+          state.cancellationChallenge = result.challengeId;
+          $('cancelForm').hidden = false;
+          $('cancelForm').reset();
+          $('sendCancelCodeBtn').textContent = 'Reenviar código';
+          showEditMessage(result.message, 'success');
+          setManagementBusy(false);
+          $('cancelPin').focus();
+        })
+        .withFailureHandler(function (error) {
+          showEditMessage(readError(error), 'error');
+          setManagementBusy(false);
+        })
+        .requestCancellation($('editCode').value, $('editEmail').value);
+    }
+    function submitCancellation(event) {
+      event.preventDefault();
+      if (!event.currentTarget.reportValidity() || !state.cancellationChallenge) return;
+      hideEditMessage();
+      setManagementBusy(true);
+      google.script.run
+        .withSuccessHandler(function (result) {
+          setManagementBusy(false);
+          resetEditFlow();
+          showEditMessage(result.message + ' Código de reserva: ' + result.code + '.', 'success');
+          if (state.lastRange) loadEvents(state.lastRange.start, state.lastRange.end);
+        })
+        .withFailureHandler(function (error) {
+          showEditMessage(readError(error), 'error');
+          setManagementBusy(false);
+          if (state.lastRange) loadEvents(state.lastRange.start, state.lastRange.end);
+        })
+        .cancelReservation({ challengeId: state.cancellationChallenge, pin: $('cancelPin').value, confirmed: $('cancelConfirmed').checked });
+    }
+    function setManagementBusy(disabled) {
+      state.managementBusy = disabled;
+      ['closeEditDialog', 'backToLookup', 'openCancelBtn', 'sendCancelCodeBtn',
+        'confirmCancelBtn', 'backFromCancelBtn', 'lookupBtn', 'updateBtn'].forEach(function (id) {
+        $(id).disabled = disabled || (id === 'updateBtn' && state.cancellationPending);
+      });
+      $('editDialog').setAttribute('aria-busy', String(disabled));
+    }
+    // El fin de un evento es exclusivo: finalizar a medianoche no ocupa el día siguiente.
+    function occupiedDateKeys(events) {
+      const dates = new Set();
+      events.forEach(function (event) {
+        if (!event.start) return;
+        const cursor = new Date(event.start);
+        const end = event.end || new Date(cursor.getTime() + 1);
+        if (end <= cursor) return;
+        cursor.setHours(0, 0, 0, 0);
+        while (cursor < end) {
+          dates.add(localIsoDate(cursor));
+          cursor.setDate(cursor.getDate() + 1);
+        }
+      });
+      return dates;
+    }
+    function paintOccupiedDays() {
+      document.querySelectorAll('#calendar .fc-daygrid-day[data-date]').forEach(function (cell) {
+        const occupied = state.occupiedDays.has(cell.dataset.date);
+        cell.classList.toggle('has-reservations', occupied);
+        cell.title = occupied ? 'Día con reservas. Consultá los horarios; puede haber franjas libres.' : '';
+      });
+      paintClosedDays();
+    }
+    function paintClosedDays() {
+      document.querySelectorAll('#calendar .fc-daygrid-day[data-date], #calendar .fc-timegrid-col[data-date]').forEach(function (cell) {
+        applyClosedDayStyle(cell, cell.dataset.date);
+      });
+    }
+    function applyClosedDayStyle(cell, dateKey) {
+      const info = state.closedDays.get(dateKey);
+      cell.classList.toggle('is-closed-day', !!info);
+      if (info) cell.title = '';
+    }
+    function selectedRestrictions() {
+      const matches = [];
+      if (!$('startDate').value || !$('endDate').value) return matches;
+      const cursor = new Date($('startDate').value + 'T12:00:00');
+      const end = new Date($('endDate').value + 'T12:00:00');
+      while (cursor <= end) {
+        const key = localIsoDate(cursor);
+        const info = state.closedDays.get(key);
+        if (info) matches.push(info);
+        const limited = state.limitedDays.get(key);
+        if (!info && limited && ($('startTime').value >= '13:00' || $('endTime').value > '13:00')) {
+          matches.push({ date: key, label: limited.label });
+        }
+        cursor.setDate(cursor.getDate() + 1);
+      }
+      return matches;
+    }
+    function showEditMessage(text, type) {
+      const box = $('editMessage');
+      box.textContent = text;
+      box.className = 'message show ' + type;
+    }
+    function hideEditMessage() { $('editMessage').className = 'message'; }
+    function setEditBusy(disabled, stage) {
+      setManagementBusy(disabled);
+      const button = stage === 'lookup' ? $('lookupBtn') : $('updateBtn');
+      button.disabled = disabled || (stage === 'update' && state.cancellationPending);
+      button.textContent = disabled ? (stage === 'lookup' ? 'Buscando…' : 'Guardando…') :
+        (stage === 'lookup' ? 'Buscar reserva' : 'Guardar cambios');
+    }
+    function syncEndDate() {
+      $('endDate').min = $('startDate').value;
+      if (!$('endDate').value || $('endDate').value < $('startDate').value) $('endDate').value = $('startDate').value;
+    }
+    function checkedWeekdays(panelId) {
+      return Array.from($(panelId).querySelectorAll('input[type="checkbox"]:checked'))
+        .map(function (input) { return Number(input.value); });
+    }
+    function setCheckedWeekdays(panelId, weekdays) {
+      const selected = (weekdays || []).map(Number);
+      $(panelId).querySelectorAll('input[type="checkbox"]').forEach(function (input) {
+        input.checked = selected.includes(Number(input.value));
+      });
+    }
+    function weekdayNames(weekdays) {
+      const labels = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+      return (weekdays || []).map(Number).filter(function (day) { return day >= 1 && day <= 6; })
+        .map(function (day) { return labels[day]; });
+    }
+    function toggleScheduleOptions(selectId, panelId) {
+      $(panelId).hidden = $(selectId).value !== 'weekly';
+    }
+    function renderNotice(items) {
+      const list = $('noticeList');
+      list.replaceChildren();
+      (items || []).forEach(function (text) {
+        const li = document.createElement('li');
+        const strong = document.createElement('strong');
+        strong.textContent = text;
+        li.appendChild(strong);
+        list.appendChild(li);
+      });
+    }
+    function selectionSummary() {
+      const start = isoDateLabel($('startDate').value);
+      const end = isoDateLabel($('endDate').value);
+      const period = $('startDate').value === $('endDate').value ? start : start + ' al ' + end;
+      return period + ' · ' + $('startTime').value + '–' + $('endTime').value;
+    }
+    function isoDateLabel(iso) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(iso || '')) return iso || '';
+      return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+        .format(new Date(iso + 'T12:00:00'));
+    }
+    function localIsoDate(date) {
+      const offset = date.getTimezoneOffset() * 60000;
+      return new Date(date.getTime() - offset).toISOString().slice(0, 10);
+    }
+    function localTime(date) {
+      return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+    }
+    function formatRange(start, end) {
+      const format = new Intl.DateTimeFormat('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
+      return format.format(start) + '–' + format.format(end);
+    }
+    function calendarEventParts(event) {
+      return {
+        time: formatRange(event.start, event.end),
+        area: (event.extendedProps && event.extendedProps.area) || event.title || 'Área no especificada'
+      };
+    }
+    function readError(error) {
+      return (error && error.message ? error.message : String(error || 'Ocurrió un error.')).replace(/^Exception:\s*/, '');
+    }
+    function showMessage(text, type) {
+      const box = $('message');
+      box.textContent = text;
+      box.className = 'message show ' + type;
+      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    function hideMessage() { $('message').className = 'message'; }
+    function setLoading(show) { $('loading').classList.toggle('show', show); }
+    function setSubmitting(disabled) {
+      state.reservationBusy = disabled;
+      $('submitBtn').disabled = disabled;
+      $('closeReservationDialog').disabled = disabled;
+      $('reservationDialog').setAttribute('aria-busy', String(disabled));
+      $('submitBtn').textContent = disabled ? 'Registrando…' : 'Confirmar reserva';
+    }
+  </script>
+</body>
+</html>
