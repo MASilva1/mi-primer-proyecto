@@ -27,7 +27,7 @@ Este directorio reúne ejercicios y prototipos desarrollados durante una formaci
 
 ## Proyecto complementario aplicado
 
-[**Gestión inteligente de solicitudes administrativas — caso de uso IDEI**](../portfolio/idei-gestion-solicitudes-ia/README.md): documentación consolidada de un prototipo de clasificación y seguimiento con evidencia de ejecuciones controladas.
+[**Gestión inteligente de solicitudes administrativas — caso de uso IDEI**](https://github.com/MASilva1/smartdesk-ai-automation): documentación consolidada de un prototipo de clasificación y seguimiento con evidencia de ejecuciones controladas.
 
 ## Seguridad y honestidad técnica
 
