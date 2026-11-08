@@ -2,7 +2,7 @@
 
 Este directorio reúne proyectos basados en problemas de procesos administrativos, con documentación suficiente para evaluar contexto, arquitectura y alcance.
 
-## [Gestión inteligente de solicitudes administrativas — IDEI](idei-gestion-solicitudes-ia/README.md)
+## [Gestión inteligente de solicitudes administrativas — IDEI](https://github.com/MASilva1/smartdesk-ai-automation)
 
 **Prototipo académico | n8n · Gmail · GPT-4o-mini · Airtable · Notion · Slack**
 
