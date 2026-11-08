@@ -25,7 +25,7 @@ Me interesa trabajar en proyectos de **automatización administrativa, inteligen
 
 [**Ver caso de negocio, arquitectura y código**](https://github.com/MASilva1/sala13-booking-system) · [**Ver aplicación institucional**](https://tinyurl.com/sala13idei)
 
-### 02 · [Gestión inteligente de solicitudes administrativas — IDEI](portfolio/idei-gestion-solicitudes-ia/README.md)
+### 02 · [Gestión inteligente de solicitudes administrativas — IDEI](https://github.com/MASilva1/smartdesk-ai-automation)
 **Prototipo académico con caso de uso administrativo · n8n · GPT-4o-mini · Gmail · Airtable · Notion · Slack**
 
 **Problema:** recibir, clasificar y seguir solicitudes administrativas por correo sin perder trazabilidad.  
@@ -33,7 +33,7 @@ Me interesa trabajar en proyectos de **automatización administrativa, inteligen
 **Evidencia:** documentación técnica, exportación sanitizada, pruebas controladas, video y flujo de revisión.  
 **Mi contribución:** orquestación, integración de sistemas, reglas de validación, control de errores, diseño del proceso y pruebas.
 
-[**Explorar el proyecto**](portfolio/idei-gestion-solicitudes-ia/README.md) · [**Ver video de demostración**](https://youtu.be/qwjR3EYyDpg)
+[**Explorar el proyecto**](https://github.com/MASilva1/smartdesk-ai-automation) · [**Ver video de demostración**](https://youtu.be/qwjR3EYyDpg)
 
 ### 03 · [IdeI SmartDesk AI — prácticas progresivas en n8n](curso-ia-avanzado/README.md)
 **Formación aplicada · Arquitectura Manager–Worker · Memoria contextual · CRM · Correo · HITL**
